@@ -11,12 +11,13 @@
 class Sound {
 private:
   int pinBuzzerInternal;
+  int pinBuzzerExternal;
   int toneBuzzerInternalLast;
   void localTone(int newTone);
   void on();
   void off();
 public:
-  Sound(int pinBuzzerInternal);
+  Sound(int pinBuzzerInternal, int pinBuzzerExternal);
   void updateSignal(EmergencyModeReason emergencyModeReason);
 };
 

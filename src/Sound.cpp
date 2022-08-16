@@ -1,8 +1,12 @@
 #include "Sound.h"
 
-Sound::Sound(int pinBuzzerInternal) {
+Sound::Sound(int pinBuzzerInternal, int pinBuzzerExternal) {
   this->pinBuzzerInternal = pinBuzzerInternal;
+  this->pinBuzzerExternal = pinBuzzerExternal;
+
   this->toneBuzzerInternalLast = 0;
+
+  pinMode(this->pinBuzzerExternal, OUTPUT);
 }
 
 void Sound::localTone(int newTone) {
@@ -26,6 +30,8 @@ void Sound::updateSignal(EmergencyModeReason emergencyModeReason) {
 }
 
 void Sound::on() {
+  digitalWrite(this->pinBuzzerExternal, HIGH);
+
   if (this->toneBuzzerInternalLast == 0 || this->toneBuzzerInternalLast == ENGINEGUARD_BUZZER_INT_LOW) {
     this->localTone(ENGINEGUARD_BUZZER_INT_HIGH);
     return;
@@ -38,5 +44,7 @@ void Sound::on() {
 }
 
 void Sound::off() {
+  digitalWrite(this->pinBuzzerExternal, LOW);
+
   this->localTone(0);
 }

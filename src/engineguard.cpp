@@ -13,6 +13,7 @@
 #define PIN_DISPLAY_DATA 21
 #define PIN_ONEWIRE 4
 #define PIN_BUZZER_INTERNAL 18
+#define PIN_BUZZER_EXTERNAL 19
 
 // Display
 U8X8_SSD1309_128X64_NONAME2_SW_I2C u8x8(PIN_DISPLAY_CLOCK, PIN_DISPLAY_DATA);
@@ -22,7 +23,7 @@ Display display(&u8x8);
 OneWire oneWire(PIN_ONEWIRE);
 DallasTemperature sensors(&oneWire);
 
-Sound sound(PIN_BUZZER_INTERNAL);
+Sound sound(PIN_BUZZER_INTERNAL, PIN_BUZZER_EXTERNAL);
 
 // We have two engines
 Engine engine1(
