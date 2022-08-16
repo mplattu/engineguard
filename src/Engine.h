@@ -12,17 +12,20 @@ private:
   String onewireAddressRoom;
   float lastTemperatureEngine;
   float lastTemperatureRoom;
+  float emergencyLimitEngine;
+  float emergencyLimitRoom;
   DallasTemperature * onewireSensors;
   String oneWireDeviceAddressToString(DeviceAddress onewireAddress);
 public:
-  Engine(String engineName, String onewireAddressEngine, String onewireAddressRoom, DallasTemperature * sensors);
+  Engine(String engineName, String onewireAddressEngine, float emergencyLimitEngine, String onewireAddressRoom, float emergencyLimitRoom, DallasTemperature * sensors);
   String getName();
-  char* getNameCh();
   void readSensors();
   float getTemperatureEngine();
-  char* getTemperatureEngineCh();
+  String getTemperatureEngineStr();
   float getTemperatureRoom();
-  char* getTemperatureRoomCh();
+  String getTemperatureRoomStr();
+  bool isEmergencyEngine();
+  bool isEmergencyRoom();
 };
 
 #endif

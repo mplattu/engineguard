@@ -1,9 +1,12 @@
 #include "Engine.h"
 
-Engine::Engine(String engineName, String onewireAddressEngine, String onewireAddressRoom, DallasTemperature * sensors) {
+Engine::Engine(String engineName, String onewireAddressEngine, float emergencyLimitEngine, String onewireAddressRoom, float emergencyLimitRoom, DallasTemperature * sensors) {
   this->engineName = engineName;
   this->onewireAddressEngine = onewireAddressEngine;
   this->onewireAddressRoom = onewireAddressRoom;
+  this->emergencyLimitEngine = emergencyLimitEngine;
+  this->emergencyLimitRoom = emergencyLimitRoom;
+
   this->lastTemperatureEngine = 0.0;
   this->lastTemperatureRoom = 0.0;
 
@@ -12,12 +15,6 @@ Engine::Engine(String engineName, String onewireAddressEngine, String onewireAdd
 
 String Engine::getName() {
   return this->engineName;
-}
-
-char* Engine::getNameCh() {
-  char* name;
-  name = &this->engineName[0];
-  return name;
 }
 
 void Engine::readSensors() {
@@ -56,24 +53,36 @@ float Engine::getTemperatureEngine() {
   return this->lastTemperatureEngine;
 }
 
-char* Engine::getTemperatureEngineCh() {
+String Engine::getTemperatureEngineStr() {
   float temperature = this->getTemperatureEngine();
 
-  char* buffer = new char[5];
-  dtostrf(temperature, 4, 0, buffer);
-  return buffer;
+  return String(temperature, 1);
 }
 
 float Engine::getTemperatureRoom() {
   return this->lastTemperatureRoom;
 }
 
-char* Engine::getTemperatureRoomCh() {
+String Engine::getTemperatureRoomStr() {
   float temperature = this->getTemperatureRoom();
 
-  char* buffer = new char[5];
-  dtostrf(temperature, 4, 0, buffer);
-  return buffer;
+  return String(temperature, 1);
+}
+
+bool Engine::isEmergencyEngine() {
+  if (this->lastTemperatureEngine > this->emergencyLimitEngine) {
+    return true;
+  }
+
+  return false;
+}
+
+bool Engine::isEmergencyRoom() {
+  if (this->lastTemperatureRoom > this->emergencyLimitRoom) {
+    return true;
+  }
+
+  return false;
 }
 
 String Engine::oneWireDeviceAddressToString(DeviceAddress onewireAddress) {

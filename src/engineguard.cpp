@@ -6,6 +6,7 @@
 #include <DallasTemperature.h>
 
 #include "Engine.h"
+#include "Display.h"
 
 #define PIN_DISPLAY_CLOCK 22
 #define PIN_DISPLAY_DATA 21
@@ -13,32 +14,79 @@
 
 // Display
 U8X8_SSD1309_128X64_NONAME2_SW_I2C u8x8(PIN_DISPLAY_CLOCK, PIN_DISPLAY_DATA);
+Display display(&u8x8);
 
 // Onewire and sensors
 OneWire oneWire(PIN_ONEWIRE);
 DallasTemperature sensors(&oneWire);
 
 // We have two engines
-Engine engine1("Eng1", "28309d1200000097", "28decb14000000ad", &sensors);
-Engine engine2("Eng2", "289cef1400000051", "28ddd61400000064", &sensors);
+Engine engine1(
+  "Eng1",              // Engine name
+  "28309d1200000097",  // Engine temperature sensor 1-wire address
+  31.0,                // Engine temperature emergency limit
+  "28decb14000000ad",  // Room temperature sensor 1-wire address
+  30.0,                // Room temperature emergency limit
+  &sensors
+);
+
+Engine engine2(
+  "Eng2",
+  "289cef1400000051",
+  31.0,                // Engine temperature emergency limit
+  "28ddd61400000064",
+  30.0,                // Room temperature emergency limit
+  &sensors
+);
 
 void setup(void) {
   Serial.begin(115200);
-  u8x8.begin();
-  u8x8.setFont(u8x8_font_7x14B_1x2_f);
 
   sensors.begin();
 }
 
-void updateDisplay(void) {
-  u8x8.drawUTF8(0, 0, engine1.getNameCh());
-  u8x8.drawUTF8(0, 2, engine2.getNameCh());
+EmergencyModeReason checkEmergency(void) {
+  EmergencyModeReason reason;
+  reason.isEmergency = false;
+  reason.target = "";
+  reason.reason = "";
+  reason.value = 0.0;
 
-  u8x8.drawUTF8(5, 0, engine1.getTemperatureEngineCh());
-  u8x8.drawUTF8(5, 2, engine2.getTemperatureEngineCh());
+  if (engine1.isEmergencyEngine()) {
+    reason.isEmergency = true;
+    reason.target = engine1.getName();
+    reason.reason = "Engine Temp";
+    reason.value = engine1.getTemperatureEngine();
 
-  u8x8.drawUTF8(10, 0, engine1.getTemperatureRoomCh());
-  u8x8.drawUTF8(10, 2, engine2.getTemperatureRoomCh());
+    return reason;
+  }
+
+  if (engine1.isEmergencyRoom()) {
+    reason.isEmergency = true;
+    reason.target = engine1.getName();
+    reason.reason = "Room Temp";
+    reason.value = engine1.getTemperatureRoom();
+
+    return reason;
+  }
+
+  if (engine2.isEmergencyEngine()) {
+    reason.isEmergency = true;
+    reason.target = engine2.getName();
+    reason.reason = "Engine Temp";
+    reason.value = engine2.getTemperatureEngine();
+
+    return reason;
+  }
+
+  if (engine2.isEmergencyRoom()) {
+    reason.isEmergency = true;
+    reason.target = engine2.getName();
+    reason.reason = "Room Temp";
+    reason.value = engine2.getTemperatureRoom();
+  }
+
+  return reason;
 }
 
 void loop(void) {
@@ -47,7 +95,7 @@ void loop(void) {
   engine1.readSensors();
   engine2.readSensors();
 
-  updateDisplay();
+  display.updateDisplay(&engine1, &engine2, checkEmergency());
 
   delay(1000);
 }
