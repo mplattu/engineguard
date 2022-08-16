@@ -7,10 +7,12 @@
 
 #include "Engine.h"
 #include "Display.h"
+#include "Sound.h"
 
 #define PIN_DISPLAY_CLOCK 22
 #define PIN_DISPLAY_DATA 21
 #define PIN_ONEWIRE 4
+#define PIN_BUZZER_INTERNAL 18
 
 // Display
 U8X8_SSD1309_128X64_NONAME2_SW_I2C u8x8(PIN_DISPLAY_CLOCK, PIN_DISPLAY_DATA);
@@ -19,6 +21,8 @@ Display display(&u8x8);
 // Onewire and sensors
 OneWire oneWire(PIN_ONEWIRE);
 DallasTemperature sensors(&oneWire);
+
+Sound sound(PIN_BUZZER_INTERNAL);
 
 // We have two engines
 Engine engine1(
@@ -84,6 +88,8 @@ EmergencyModeReason checkEmergency(void) {
     reason.target = engine2.getName();
     reason.reason = "Room Temp";
     reason.value = engine2.getTemperatureRoom();
+
+    return reason;
   }
 
   return reason;
@@ -95,7 +101,10 @@ void loop(void) {
   engine1.readSensors();
   engine2.readSensors();
 
-  display.updateDisplay(&engine1, &engine2, checkEmergency());
+  const EmergencyModeReason emergencyModeReason = checkEmergency();
+
+  display.updateDisplay(&engine1, &engine2, emergencyModeReason);
+  sound.updateSignal(emergencyModeReason);
 
   delay(1000);
 }
