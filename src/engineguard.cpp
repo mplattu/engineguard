@@ -9,6 +9,7 @@
 #include "Display.h"
 #include "Sound.h"
 
+#define PIN_ONBOARD_LED  2
 #define PIN_DISPLAY_CLOCK 22
 #define PIN_DISPLAY_DATA 21
 #define PIN_ONEWIRE 4
@@ -51,6 +52,9 @@ Engine engine2(
 #include "../lib/button.cpp"
 
 void setup(void) {
+  pinMode(PIN_ONBOARD_LED, OUTPUT);
+  digitalWrite(PIN_ONBOARD_LED, HIGH);
+
   Serial.begin(115200);
 
   sensors.begin();
@@ -117,5 +121,8 @@ void loop(void) {
 
   buttonLoop();
 
-  delay(1000);
+  digitalWrite(PIN_ONBOARD_LED, LOW);
+  delay(500);
+  digitalWrite(PIN_ONBOARD_LED, HIGH);
+  delay(500);
 }
