@@ -14,11 +14,11 @@ private:
   int pinBuzzerExternal;
   int toneBuzzerInternalLast;
   void localTone(int newTone);
-  void on();
+  void on(bool suppressBuzzerExternal);
   void off();
 public:
   Sound(int pinBuzzerInternal, int pinBuzzerExternal);
-  void updateSignal(EmergencyModeReason emergencyModeReason);
+  void updateSignal(EmergencyModeReason emergencyModeReason, bool cancelInEffect);
 };
 
 #endif

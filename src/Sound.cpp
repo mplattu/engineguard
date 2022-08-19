@@ -20,17 +20,22 @@ void Sound::localTone(int newTone) {
   }
 }
 
-void Sound::updateSignal(EmergencyModeReason emergencyModeReason) {
+void Sound::updateSignal(EmergencyModeReason emergencyModeReason, bool cancelInEffect) {
   if (emergencyModeReason.isEmergency) {
-    this->on();
+    this->on(cancelInEffect);
   }
   else {
     this->off();
   }
 }
 
-void Sound::on() {
-  digitalWrite(this->pinBuzzerExternal, HIGH);
+void Sound::on(bool suppressBuzzerExternal) {
+  if (suppressBuzzerExternal) {
+    digitalWrite(this->pinBuzzerExternal, LOW);
+  }
+  else {
+    digitalWrite(this->pinBuzzerExternal, HIGH);
+  }
 
   if (this->toneBuzzerInternalLast == 0 || this->toneBuzzerInternalLast == ENGINEGUARD_BUZZER_INT_LOW) {
     this->localTone(ENGINEGUARD_BUZZER_INT_HIGH);

@@ -14,6 +14,8 @@
 #define PIN_ONEWIRE 4
 #define PIN_BUZZER_INTERNAL 18
 #define PIN_BUZZER_EXTERNAL 19
+#define PIN_CLEAR_BUTTON 23
+#define CLEAR_BUTTON_VALIDITY_IN_SECONDS 30
 
 // Display
 U8X8_SSD1309_128X64_NONAME2_SW_I2C u8x8(PIN_DISPLAY_CLOCK, PIN_DISPLAY_DATA);
@@ -44,10 +46,16 @@ Engine engine2(
   &sensors
 );
 
+// Unfortunately the interrupt-related stuff (namely the button) has to be a static
+// function. So no class-stuff here!
+#include "../lib/button.cpp"
+
 void setup(void) {
   Serial.begin(115200);
 
   sensors.begin();
+
+  buttonSetup(PIN_CLEAR_BUTTON, CLEAR_BUTTON_VALIDITY_IN_SECONDS);
 }
 
 EmergencyModeReason checkEmergency(void) {
@@ -105,7 +113,9 @@ void loop(void) {
   const EmergencyModeReason emergencyModeReason = checkEmergency();
 
   display.updateDisplay(&engine1, &engine2, emergencyModeReason);
-  sound.updateSignal(emergencyModeReason);
+  sound.updateSignal(emergencyModeReason, buttonPressIsStillValid());
+
+  buttonLoop();
 
   delay(1000);
 }
