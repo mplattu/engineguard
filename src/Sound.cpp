@@ -6,18 +6,17 @@ Sound::Sound(int pinBuzzerInternal, int pinBuzzerExternal) {
 
   this->toneBuzzerInternalLast = 0;
 
+  pinMode(this->pinBuzzerInternal, OUTPUT);
+  ledcSetup(ENGINEGUARD_BUZZER_CHANNEL, 0, 10);
+  ledcAttachPin(this->pinBuzzerInternal, ENGINEGUARD_BUZZER_CHANNEL);
+
   pinMode(this->pinBuzzerExternal, OUTPUT);
 }
 
 void Sound::localTone(int newTone) {
   this->toneBuzzerInternalLast = newTone;
 
-  if (newTone == 0) {
-    noTone(this->pinBuzzerInternal);
-  }
-  else {
-    tone(this->pinBuzzerInternal, newTone);
-  }
+  ledcWriteTone(ENGINEGUARD_BUZZER_CHANNEL, newTone);
 }
 
 void Sound::updateSignal(EmergencyModeReason emergencyModeReason, bool cancelInEffect) {
