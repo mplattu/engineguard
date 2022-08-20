@@ -6,6 +6,7 @@
 #include <DallasTemperature.h>
 
 #include "Engine.h"
+#include "DigitalInput.h"
 #include "Display.h"
 #include "Sound.h"
 
@@ -17,6 +18,9 @@
 #define PIN_BUZZER_EXTERNAL 19
 #define PIN_CLEAR_BUTTON 23
 #define CLEAR_BUTTON_VALIDITY_IN_SECONDS 30
+#define PIN_INPUT_RELAY_OIL_ENG_1 25
+#define PIN_INPUT_RELAY_OIL_ENG_2 32
+#define PIN_INPUT_RELAY_SMOKE 33
 
 // Display
 U8X8_SSD1309_128X64_NONAME2_SW_I2C u8x8(PIN_DISPLAY_CLOCK, PIN_DISPLAY_DATA);
@@ -47,6 +51,10 @@ Engine engine2(
   &sensors
 );
 
+DigitalInput alarmOilEngine1("Eng1", PIN_INPUT_RELAY_OIL_ENG_1);
+DigitalInput alarmOilEngine2("Eng2", PIN_INPUT_RELAY_OIL_ENG_2);
+DigitalInput alarmSmoke("Eng Room", PIN_INPUT_RELAY_SMOKE);
+
 // Unfortunately the interrupt-related stuff (namely the button) has to be a static
 // function. So no class-stuff here!
 #include "../lib/button.cpp"
@@ -67,6 +75,7 @@ EmergencyModeReason checkEmergency(void) {
   reason.isEmergency = false;
   reason.target = "";
   reason.reason = "";
+  reason.hasValue = false;
   reason.value = 0.0;
 
   if (engine1.isEmergencyEngine()) {
@@ -74,6 +83,7 @@ EmergencyModeReason checkEmergency(void) {
     reason.target = engine1.getName();
     reason.reason = "Engine Temp";
     reason.value = engine1.getTemperatureEngine();
+    reason.hasValue = true;
 
     return reason;
   }
@@ -83,6 +93,7 @@ EmergencyModeReason checkEmergency(void) {
     reason.target = engine1.getName();
     reason.reason = "Room Temp";
     reason.value = engine1.getTemperatureRoom();
+    reason.hasValue = true;
 
     return reason;
   }
@@ -92,6 +103,7 @@ EmergencyModeReason checkEmergency(void) {
     reason.target = engine2.getName();
     reason.reason = "Engine Temp";
     reason.value = engine2.getTemperatureEngine();
+    reason.hasValue = true;
 
     return reason;
   }
@@ -101,8 +113,30 @@ EmergencyModeReason checkEmergency(void) {
     reason.target = engine2.getName();
     reason.reason = "Room Temp";
     reason.value = engine2.getTemperatureRoom();
+    reason.hasValue = true;
 
     return reason;
+  }
+
+  if (alarmOilEngine1.alarmIsActive()) {
+    reason.isEmergency = true;
+    reason.target = alarmOilEngine1.getName();
+    reason.reason = "Oil Pressure";
+    reason.hasValue = false;
+  }
+
+  if (alarmOilEngine2.alarmIsActive()) {
+    reason.isEmergency = true;
+    reason.target = alarmOilEngine2.getName();
+    reason.reason = "Oil Pressure";
+    reason.hasValue = false;
+  }
+
+  if (alarmSmoke.alarmIsActive()) {
+    reason.isEmergency = true;
+    reason.target = alarmSmoke.getName();
+    reason.reason = "Smoke Alarm";
+    reason.hasValue = false;
   }
 
   return reason;

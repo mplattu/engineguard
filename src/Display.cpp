@@ -35,9 +35,10 @@ void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyModeRea
     this->display->drawUTF8(0, 2, emergencyModeReason.target.c_str());
     this->display->drawUTF8(0, 4, emergencyModeReason.reason.c_str());
 
-    String valueStr = String(emergencyModeReason.value, 1);
-
-    this->display->drawUTF8(0, 6, valueStr.c_str());
+    if (emergencyModeReason.hasValue) {
+      String valueStr = String(emergencyModeReason.value, 1);
+      this->display->drawUTF8(0, 6, valueStr.c_str());
+    }
   }
   else {
     this->display->drawUTF8(0, 0, engine1->getName().c_str());
