@@ -34,7 +34,7 @@ Sound sound(PIN_BUZZER_INTERNAL, PIN_BUZZER_EXTERNAL);
 
 // We have two engines
 Engine engine1(
-  "Eng1",              // Engine name
+  "Engine 1",              // Engine name
   "28309d1200000097",  // Engine temperature sensor 1-wire address
   31.0,                // Engine temperature emergency limit
   "28decb14000000ad",  // Room temperature sensor 1-wire address
@@ -43,7 +43,7 @@ Engine engine1(
 );
 
 Engine engine2(
-  "Eng2",
+  "Engine 2",
   "289cef1400000051",
   31.0,                // Engine temperature emergency limit
   "28ddd61400000064",
@@ -51,8 +51,8 @@ Engine engine2(
   &sensors
 );
 
-DigitalInput alarmOilEngine1("Eng1", PIN_INPUT_RELAY_OIL_ENG_1);
-DigitalInput alarmOilEngine2("Eng2", PIN_INPUT_RELAY_OIL_ENG_2);
+DigitalInput alarmOilEngine1("Engine 1", PIN_INPUT_RELAY_OIL_ENG_1);
+DigitalInput alarmOilEngine2("Engine 2", PIN_INPUT_RELAY_OIL_ENG_2);
 DigitalInput alarmSmoke("Eng Room", PIN_INPUT_RELAY_SMOKE);
 
 // Unfortunately the interrupt-related stuff (namely the button) has to be a static
@@ -82,7 +82,7 @@ EmergencyModeReason checkEmergency(void) {
     reason.isEmergency = true;
     reason.target = engine1.getName();
     reason.reason = "Engine Temp";
-    reason.value = engine1.getTemperatureEngine();
+    reason.value = engine1.getTemperatureEngineStr();
     reason.hasValue = true;
 
     return reason;
@@ -92,7 +92,7 @@ EmergencyModeReason checkEmergency(void) {
     reason.isEmergency = true;
     reason.target = engine1.getName();
     reason.reason = "Room Temp";
-    reason.value = engine1.getTemperatureRoom();
+    reason.value = engine1.getTemperatureRoomStr();
     reason.hasValue = true;
 
     return reason;
@@ -102,7 +102,7 @@ EmergencyModeReason checkEmergency(void) {
     reason.isEmergency = true;
     reason.target = engine2.getName();
     reason.reason = "Engine Temp";
-    reason.value = engine2.getTemperatureEngine();
+    reason.value = engine2.getTemperatureEngineStr();
     reason.hasValue = true;
 
     return reason;
@@ -112,7 +112,7 @@ EmergencyModeReason checkEmergency(void) {
     reason.isEmergency = true;
     reason.target = engine2.getName();
     reason.reason = "Room Temp";
-    reason.value = engine2.getTemperatureRoom();
+    reason.value = engine2.getTemperatureRoomStr();
     reason.hasValue = true;
 
     return reason;
@@ -156,7 +156,7 @@ void loop(void) {
   buttonLoop();
 
   digitalWrite(PIN_ONBOARD_LED, LOW);
-  delay(500);
+  delay(250);
   digitalWrite(PIN_ONBOARD_LED, HIGH);
-  delay(500);
+  delay(250);
 }

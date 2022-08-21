@@ -56,7 +56,7 @@ float Engine::getTemperatureEngine() {
 String Engine::getTemperatureEngineStr() {
   float temperature = this->getTemperatureEngine();
 
-  return String(temperature, 1);
+  return String(temperature, 1) + "°C";
 }
 
 float Engine::getTemperatureRoom() {
@@ -66,7 +66,7 @@ float Engine::getTemperatureRoom() {
 String Engine::getTemperatureRoomStr() {
   float temperature = this->getTemperatureRoom();
 
-  return String(temperature, 1);
+  return String(temperature, 1) + "°C";
 }
 
 bool Engine::isEmergencyEngine() {

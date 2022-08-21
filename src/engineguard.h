@@ -8,7 +8,7 @@ struct EmergencyModeReason {
   String target;
   String reason;
   bool hasValue;
-  float value;
+  String value;
 };
 
 #endif

@@ -12,7 +12,11 @@ class Display {
 private:
   U8X8_SSD1309_128X64_NONAME2_SW_I2C * display;
   EmergencyModeReason lastEmergencyModeReason;
+  int getIconColumn();
+  void setFontNormal();
   bool emergencyModeReasonHasChanged(EmergencyModeReason emergencyMode);
+  void updateDisplayHeartbeat();
+  bool heartbeatFlag;
 public:
   Display(U8X8_SSD1309_128X64_NONAME2_SW_I2C * display);
   void updateDisplay(Engine * engine1, Engine * engine2, EmergencyModeReason emergencyModeReason);
