@@ -69,10 +69,10 @@ Output
   1. DC GND (OLED)
   1. I2C SDA (OLED) - GPIO 21
   1. I2C SCL (OLED) - GPIO 22
-  1. Alarm bell (DC VCC 9-32V from input pin 1) - GPIO 19
+  1. Alarm bell (DC VCC 9-32V from input pin 1) - GPIO 19 via relay U2
   1. Alarm bell GND
   1. Clear button A (closed when pressed) - GPIO 23
-  1. Clear button A (closed when pressed)
+  1. Clear button A (closed when pressed) - GND
   1. unused
   1. unused
   1. unused
