@@ -3,12 +3,14 @@
 
 #include <Arduino.h>
 
-struct EmergencyModeReason {
+struct EmergencyReason {
   bool isEmergency;
   String target;
   String reason;
   bool hasValue;
   String value;
 };
+
+EmergencyReason getZeroEmergencyReason();
 
 #endif

@@ -69,20 +69,34 @@ String Engine::getTemperatureRoomStr() {
   return String(temperature, 1) + "°C";
 }
 
-bool Engine::isEmergencyEngine() {
+bool Engine::isEmergency() {
   if (this->lastTemperatureEngine > this->emergencyLimitEngine) {
+    this->lastEmergencyReason.isEmergency = true;
+    this->lastEmergencyReason.target = this->engineName;
+    this->lastEmergencyReason.reason = "Engine temp";
+    this->lastEmergencyReason.value = this->getTemperatureEngineStr();
+    this->lastEmergencyReason.hasValue = true;
+
     return true;
   }
 
+  if (this->lastTemperatureRoom > this->emergencyLimitRoom) {
+    this->lastEmergencyReason.isEmergency = true;
+    this->lastEmergencyReason.target = this->engineName;
+    this->lastEmergencyReason.reason = "Eng room temp";
+    this->lastEmergencyReason.value = this->getTemperatureRoomStr();
+    this->lastEmergencyReason.hasValue = true;
+
+    return true;
+  }
+
+  this->lastEmergencyReason = getZeroEmergencyReason();
+  
   return false;
 }
 
-bool Engine::isEmergencyRoom() {
-  if (this->lastTemperatureRoom > this->emergencyLimitRoom) {
-    return true;
-  }
-
-  return false;
+EmergencyReason Engine::getEmergencyReason() {
+  return this->lastEmergencyReason;
 }
 
 String Engine::oneWireDeviceAddressToString(DeviceAddress onewireAddress) {

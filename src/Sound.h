@@ -19,7 +19,7 @@ private:
   void off();
 public:
   Sound(int pinBuzzerInternal, int pinBuzzerExternal);
-  void updateSignal(EmergencyModeReason emergencyModeReason, bool cancelInEffect);
+  void updateSignal(EmergencyReason emergencyModeReason, bool cancelInEffect);
 };
 
 #endif

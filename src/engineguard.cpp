@@ -51,9 +51,9 @@ Engine engine2(
   &sensors
 );
 
-DigitalInput alarmOilEngine1("Engine 1", PIN_INPUT_RELAY_OIL_ENG_1);
-DigitalInput alarmOilEngine2("Engine 2", PIN_INPUT_RELAY_OIL_ENG_2);
-DigitalInput alarmSmoke("Eng Room", PIN_INPUT_RELAY_SMOKE);
+DigitalInput alarmOilEngine1("Engine 1", PIN_INPUT_RELAY_OIL_ENG_1, "Oil Pressure");
+DigitalInput alarmOilEngine2("Engine 2", PIN_INPUT_RELAY_OIL_ENG_2, "Oil Pressure");
+DigitalInput alarmSmoke("Engine Room", PIN_INPUT_RELAY_SMOKE, "Smoke Alarm");
 
 // Unfortunately the interrupt-related stuff (namely the button) has to be a static
 // function. So no class-stuff here!
@@ -70,76 +70,40 @@ void setup(void) {
   buttonSetup(PIN_CLEAR_BUTTON, CLEAR_BUTTON_VALIDITY_IN_SECONDS);
 }
 
-EmergencyModeReason checkEmergency(void) {
-  EmergencyModeReason reason;
-  reason.isEmergency = false;
-  reason.target = "";
-  reason.reason = "";
-  reason.hasValue = false;
-  reason.value = 0.0;
+EmergencyReason getZeroEmergencyReason(void) {
+  EmergencyReason zeroEmergencyReason;
 
-  if (engine1.isEmergencyEngine()) {
-    reason.isEmergency = true;
-    reason.target = engine1.getName();
-    reason.reason = "Engine Temp";
-    reason.value = engine1.getTemperatureEngineStr();
-    reason.hasValue = true;
+  zeroEmergencyReason.isEmergency = false;
+  zeroEmergencyReason.target = "";
+  zeroEmergencyReason.reason = "";
+  zeroEmergencyReason.hasValue = false;
+  zeroEmergencyReason.value = "";
 
-    return reason;
+  return zeroEmergencyReason;
+}
+
+EmergencyReason checkEmergency(void) {
+  if (engine1.isEmergency()) {
+    return engine1.getEmergencyReason();
   }
 
-  if (engine1.isEmergencyRoom()) {
-    reason.isEmergency = true;
-    reason.target = engine1.getName();
-    reason.reason = "Room Temp";
-    reason.value = engine1.getTemperatureRoomStr();
-    reason.hasValue = true;
-
-    return reason;
+  if (engine2.isEmergency()) {
+    return engine2.getEmergencyReason();
   }
 
-  if (engine2.isEmergencyEngine()) {
-    reason.isEmergency = true;
-    reason.target = engine2.getName();
-    reason.reason = "Engine Temp";
-    reason.value = engine2.getTemperatureEngineStr();
-    reason.hasValue = true;
-
-    return reason;
+  if (alarmOilEngine1.isEmergency()) {
+    return alarmOilEngine1.getEmergencyReason();
   }
 
-  if (engine2.isEmergencyRoom()) {
-    reason.isEmergency = true;
-    reason.target = engine2.getName();
-    reason.reason = "Room Temp";
-    reason.value = engine2.getTemperatureRoomStr();
-    reason.hasValue = true;
-
-    return reason;
+  if (alarmOilEngine2.isEmergency()) {
+    return alarmOilEngine2.getEmergencyReason();
   }
 
-  if (alarmOilEngine1.alarmIsActive()) {
-    reason.isEmergency = true;
-    reason.target = alarmOilEngine1.getName();
-    reason.reason = "Oil Pressure";
-    reason.hasValue = false;
+  if (alarmSmoke.isEmergency()) {
+    return alarmSmoke.getEmergencyReason();
   }
 
-  if (alarmOilEngine2.alarmIsActive()) {
-    reason.isEmergency = true;
-    reason.target = alarmOilEngine2.getName();
-    reason.reason = "Oil Pressure";
-    reason.hasValue = false;
-  }
-
-  if (alarmSmoke.alarmIsActive()) {
-    reason.isEmergency = true;
-    reason.target = alarmSmoke.getName();
-    reason.reason = "Smoke Alarm";
-    reason.hasValue = false;
-  }
-
-  return reason;
+  return getZeroEmergencyReason();
 }
 
 void loop(void) {
@@ -148,10 +112,10 @@ void loop(void) {
   engine1.readSensors();
   engine2.readSensors();
 
-  const EmergencyModeReason emergencyModeReason = checkEmergency();
+  const EmergencyReason EmergencyReason = checkEmergency();
 
-  display.updateDisplay(&engine1, &engine2, emergencyModeReason);
-  sound.updateSignal(emergencyModeReason, buttonPressIsStillValid());
+  display.updateDisplay(&engine1, &engine2, EmergencyReason);
+  sound.updateSignal(EmergencyReason, buttonPressIsStillValid());
 
   buttonLoop();
 

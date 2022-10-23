@@ -4,13 +4,7 @@
 Display::Display(U8X8_SSD1309_128X64_NONAME2_SW_I2C * display) {
   this->display = display;
 
-  EmergencyModeReason emptyEmergency;
-  emptyEmergency.isEmergency = false;
-  emptyEmergency.target = "";
-  emptyEmergency.reason = "";
-  emptyEmergency.value = 0.0;
-
-  this->lastEmergencyModeReason = emptyEmergency;
+  this->lastEmergencyReason = getZeroEmergencyReason();
 
   this->heartbeatFlag = false;
 
@@ -22,8 +16,8 @@ void Display::setFontNormal() {
   this->display->setFont(u8x8_font_7x14B_1x2_f);
 }
 
-bool Display::emergencyModeReasonHasChanged(EmergencyModeReason emergencyMode) {
-  if (this->lastEmergencyModeReason.isEmergency != emergencyMode.isEmergency) {
+bool Display::emergencyReasonHasChanged(EmergencyReason emergencyMode) {
+  if (this->lastEmergencyReason.isEmergency != emergencyMode.isEmergency) {
     return true;
   }
 
@@ -49,19 +43,19 @@ void Display::updateDisplayHeartbeat() {
   this->heartbeatFlag = ! this->heartbeatFlag;
 }
 
-void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyModeReason emergencyModeReason) {
-  if (this->emergencyModeReasonHasChanged(emergencyModeReason)) {
+void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason) {
+  if (this->emergencyReasonHasChanged(emergencyReason)) {
     this->display->clearDisplay();
-    this->lastEmergencyModeReason = emergencyModeReason;
+    this->lastEmergencyReason = emergencyReason;
   }
 
-  if (emergencyModeReason.isEmergency) {
+  if (emergencyReason.isEmergency) {
     this->display->drawUTF8(0, 0, "Emergency");
-    this->display->drawUTF8(2, 2, emergencyModeReason.target.c_str());
-    this->display->drawUTF8(2, 4, emergencyModeReason.reason.c_str());
+    this->display->drawUTF8(2, 2, emergencyReason.target.c_str());
+    this->display->drawUTF8(2, 4, emergencyReason.reason.c_str());
 
-    if (emergencyModeReason.hasValue) {
-      this->display->drawUTF8(2, 6, emergencyModeReason.value.c_str());
+    if (emergencyReason.hasValue) {
+      this->display->drawUTF8(2, 6, emergencyReason.value.c_str());
     }
 
     this->display->setFont(u8x8_font_open_iconic_embedded_2x2);

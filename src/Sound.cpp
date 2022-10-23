@@ -19,8 +19,8 @@ void Sound::localTone(int newTone) {
   ledcWriteTone(ENGINEGUARD_BUZZER_CHANNEL, newTone);
 }
 
-void Sound::updateSignal(EmergencyModeReason emergencyModeReason, bool cancelInEffect) {
-  if (emergencyModeReason.isEmergency) {
+void Sound::updateSignal(EmergencyReason emergencyReason, bool cancelInEffect) {
+  if (emergencyReason.isEmergency) {
     this->on(cancelInEffect);
   }
   else {

@@ -5,6 +5,8 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include "engineguard.h"
+
 class Engine {
 private:
   String engineName;
@@ -14,6 +16,7 @@ private:
   float lastTemperatureRoom;
   float emergencyLimitEngine;
   float emergencyLimitRoom;
+  EmergencyReason lastEmergencyReason;
   DallasTemperature * onewireSensors;
   String oneWireDeviceAddressToString(DeviceAddress onewireAddress);
 public:
@@ -24,8 +27,8 @@ public:
   String getTemperatureEngineStr();
   float getTemperatureRoom();
   String getTemperatureRoomStr();
-  bool isEmergencyEngine();
-  bool isEmergencyRoom();
+  bool isEmergency();
+  EmergencyReason getEmergencyReason();
 };
 
 #endif
