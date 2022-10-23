@@ -31,6 +31,13 @@
 #include <WiFi.h>
 #endif
 
+#ifdef MDNS_NAME
+#ifdef OTA_PASSWORD
+#define OTA
+#include <ArduinoOTA.h>
+#endif
+#endif
+
 // Display
 U8X8_SSD1309_128X64_NONAME2_SW_I2C u8x8(PIN_DISPLAY_CLOCK, PIN_DISPLAY_DATA);
 Display display(&u8x8);
@@ -68,6 +75,10 @@ DigitalInput alarmSmoke("Engine Room", PIN_INPUT_RELAY_SMOKE, "Smoke Alarm");
 // function. So no class-stuff here!
 #include "../lib/button.cpp"
 
+#ifdef OTA
+#include "../lib/ota.cpp"
+#endif
+
 void setup(void) {
   pinMode(PIN_ONBOARD_LED, OUTPUT);
   digitalWrite(PIN_ONBOARD_LED, HIGH);
@@ -93,6 +104,12 @@ void setup(void) {
     Serial.println("Error starting mDNS");
     return;
   }
+#endif
+
+#ifdef OTA
+  Serial.print("Initialising OTA...");
+  initialiseArduinoOTA(MDNS_NAME, OTA_PASSWORD);
+  Serial.println("OK");
 #endif
 }
 
@@ -156,5 +173,9 @@ void loop(void) {
     WiFi.disconnect();
     WiFi.reconnect();
   }
+#endif
+
+#ifdef OTA
+  ArduinoOTA.handle();
 #endif
 }

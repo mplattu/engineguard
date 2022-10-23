@@ -16,7 +16,7 @@ Intended operation:
 ## Project Status
 
  1. We have a working code for all the sensors.
- 1. Ordered first set of PCBs.
+ 1. We are testing the PCB v3.
 
 ## Technical Details
 
@@ -86,9 +86,15 @@ Output
 ### Building and Uploading the Code
 
  * Install PlatformIO
- * You'll find the configurations from `src/engineguard.cpp`. If you don't
+ * Copy the configuration template `include/settings.cpp.sample` to `include/settings.cpp`.
+   Make necessary changes.
+ * If you are planning to use OTA updates copy `include/settings.mk.sample` to `include/settings.mk`.
+   Make necessary changes.
+ * You'll find more configurations in `src/engineguard.cpp`. If you don't
    have twin engines just remove references to the engine 2.
- * `make upload` should build and upload the code to your ESP32
+ * `make upload` should build and upload the code to your ESP32 via USB.
+ * `make upload_ota` should do the same as OTA update after you have uploaded the first
+   version of the code via USB.
  * I had problems uploading the code to an unused ESP32. It appears that my chip was
    missing some boot code. Uploading a simple Hello World from Arduino IDE did the
    trick.

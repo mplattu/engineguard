@@ -5,3 +5,9 @@
 #define WIFI_SSID "your-wifi-ssid"
 #define WIFI_PASS "your-wifi-passphrase"
 #define MDNS_NAME "eg"
+
+// Define MDNS_NAME and OTA password to activate OTA updates
+#define OTA_PASSWORD "your-secret-ota-password"
+
+// To make OTA update to work with "make upload_ota" copy settings.mk.sample
+// to settings.mk and define corresponding values in the file.

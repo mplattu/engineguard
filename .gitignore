@@ -36,3 +36,4 @@
 
 # EngineGuard local settings
 include/settings.cpp
+include/*.mk
