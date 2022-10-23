@@ -33,3 +33,6 @@
 
 # PlatformIO
 .pio/
+
+# EngineGuard local settings
+include/settings.cpp

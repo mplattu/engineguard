@@ -1,0 +1,7 @@
+// Compile-time settings for EngineGuard
+
+// Defining WiFi-related variables activates network
+// Comment these if you want to disable WiFi support
+#define WIFI_SSID "your-wifi-ssid"
+#define WIFI_PASS "your-wifi-passphrase"
+#define MDNS_NAME "eg"

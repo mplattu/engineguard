@@ -22,6 +22,15 @@
 #define PIN_INPUT_RELAY_OIL_ENG_2 32
 #define PIN_INPUT_RELAY_SMOKE 33
 
+#include "../include/settings.cpp"
+
+// Network
+#ifdef WIFI_SSID
+#define WIFI
+#include <ESPmDNS.h>
+#include <WiFi.h>
+#endif
+
 // Display
 U8X8_SSD1309_128X64_NONAME2_SW_I2C u8x8(PIN_DISPLAY_CLOCK, PIN_DISPLAY_DATA);
 Display display(&u8x8);
@@ -68,6 +77,23 @@ void setup(void) {
   sensors.begin();
 
   buttonSetup(PIN_CLEAR_BUTTON, CLEAR_BUTTON_VALIDITY_IN_SECONDS);
+
+#ifdef WIFI
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print("Connecting to WiFi ");
+    Serial.print(WIFI_SSID);
+    Serial.print(", status: ");
+    Serial.println(WiFi.status());
+  }
+
+  if(!MDNS.begin(MDNS_NAME)) {
+    Serial.println("Error starting mDNS");
+    return;
+  }
+#endif
 }
 
 EmergencyReason getZeroEmergencyReason(void) {
@@ -123,4 +149,12 @@ void loop(void) {
   delay(250);
   digitalWrite(PIN_ONBOARD_LED, HIGH);
   delay(250);
+
+#ifdef WIFI
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi connection lost - attemting to reconnect");
+    WiFi.disconnect();
+    WiFi.reconnect();
+  }
+#endif
 }
