@@ -92,12 +92,11 @@ void setup(void) {
 #ifdef WIFI
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print("Connecting to WiFi ");
-    Serial.print(WIFI_SSID);
-    Serial.print(", status: ");
-    Serial.println(WiFi.status());
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.printf("Failed to connect to %s, rebooting in 5 seconds...", WIFI_SSID);
+    delay(5000);
+    Serial.println("Rebooting");
+    ESP.restart();
   }
 
   if(!MDNS.begin(MDNS_NAME)) {
