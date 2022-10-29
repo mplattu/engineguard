@@ -43,25 +43,58 @@ void Display::updateDisplayHeartbeat() {
   this->heartbeatFlag = ! this->heartbeatFlag;
 }
 
-void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason) {
+void Display::clearObsoleteEmergencyReason(EmergencyReason emergencyReason) {
   if (this->emergencyReasonHasChanged(emergencyReason)) {
     this->display->clearDisplay();
     this->lastEmergencyReason = emergencyReason;
   }
+}
+
+void Display::updateDisplayEmergencyMode(EmergencyReason emergencyReason) {
+  this->display->drawUTF8(0, 0, "Emergency");
+  this->display->drawUTF8(2, 2, emergencyReason.target.c_str());
+  this->display->drawUTF8(2, 4, emergencyReason.reason.c_str());
+
+  if (emergencyReason.hasValue) {
+    this->display->drawUTF8(2, 6, emergencyReason.value.c_str());
+  }
+
+  this->display->setFont(u8x8_font_open_iconic_embedded_2x2);
+  this->display->drawUTF8(this->getIconColumn(), 0, "C");
+  this->setFontNormal();
+}
+
+void Display::updateDisplay(EmergencyReason emergencyReason) {
+  this->clearObsoleteEmergencyReason(emergencyReason);
 
   if (emergencyReason.isEmergency) {
-    this->display->drawUTF8(0, 0, "Emergency");
-    this->display->drawUTF8(2, 2, emergencyReason.target.c_str());
-    this->display->drawUTF8(2, 4, emergencyReason.reason.c_str());
+    this->updateDisplayEmergencyMode(emergencyReason);
+  }
+  else {
+    this->updateDisplayHeartbeat();
+  }
+}
 
-    if (emergencyReason.hasValue) {
-      this->display->drawUTF8(2, 6, emergencyReason.value.c_str());
-    }
+void Display::updateDisplay(Engine * engine, EmergencyReason emergencyReason) {
+  this->clearObsoleteEmergencyReason(emergencyReason);
 
-    this->display->setFont(u8x8_font_open_iconic_embedded_2x2);
-    this->display->drawUTF8(this->getIconColumn(), 0, "C");
-    this->setFontNormal();
+  if (emergencyReason.isEmergency) {
+    this->updateDisplayEmergencyMode(emergencyReason);
+  }
+  else {
+    this->display->drawUTF8(0, 1, engine->getName().c_str());
+    this->display->drawUTF8(1, 3, engine->getTemperatureEngineStr().c_str());
+    this->display->drawUTF8(8, 3, engine->getTemperatureRoomStr().c_str());
 
+    this->updateDisplayHeartbeat();
+  }
+}
+
+void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason) {
+  this->clearObsoleteEmergencyReason(emergencyReason);
+
+  if (emergencyReason.isEmergency) {
+    this->updateDisplayEmergencyMode(emergencyReason);
   }
   else {
     this->display->drawUTF8(0, 0, engine1->getName().c_str());

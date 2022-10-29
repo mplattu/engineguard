@@ -16,12 +16,14 @@ private:
   float lastTemperatureRoom;
   float emergencyLimitEngine;
   float emergencyLimitRoom;
+  String lastReadStatus;
   EmergencyReason lastEmergencyReason;
   DallasTemperature * onewireSensors;
   String oneWireDeviceAddressToString(DeviceAddress onewireAddress);
 public:
   Engine(String engineName, String onewireAddressEngine, float emergencyLimitEngine, String onewireAddressRoom, float emergencyLimitRoom, DallasTemperature * sensors);
   String getName();
+  String getStatus();
   void readSensors();
   float getTemperatureEngine();
   String getTemperatureEngineStr();

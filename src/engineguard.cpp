@@ -29,6 +29,8 @@
 #define WIFI
 #include <ESPmDNS.h>
 #include <WiFi.h>
+#include <WebServer.h>
+WebServer webServer(80);
 #endif
 
 #ifdef MDNS_NAME
@@ -48,27 +50,37 @@ DallasTemperature sensors(&oneWire);
 
 Sound sound(PIN_BUZZER_INTERNAL, PIN_BUZZER_EXTERNAL);
 
-// We have two engines
+// Engines
+#ifdef ENGINE1_NAME
+#define ENGINE1
 Engine engine1(
-  "Engine 1",              // Engine name
-  "28309d1200000097",  // Engine temperature sensor 1-wire address
-  31.0,                // Engine temperature emergency limit
-  "28decb14000000ad",  // Room temperature sensor 1-wire address
-  30.0,                // Room temperature emergency limit
+  ENGINE1_NAME,             // Engine name
+  ENGINE1_TEMP_ENG,         // Engine temperature sensor 1-wire address
+  ENGINE1_TEMP_ENG_LIMIT,   // Engine temperature emergency limit
+  ENGINE1_TEMP_ROOM,        // Room temperature sensor 1-wire address
+  ENGINE1_TEMP_ROOM_LIMIT,  // Room temperature emergency limit
   &sensors
 );
+#endif
 
+#ifdef ENGINE2_NAME
+#define ENGINE2
 Engine engine2(
-  "Engine 2",
-  "289cef1400000051",
-  31.0,                // Engine temperature emergency limit
-  "28ddd61400000064",
-  30.0,                // Room temperature emergency limit
+  ENGINE2_NAME,             // Engine name
+  ENGINE2_TEMP_ENG,         // Engine temperature sensor 1-wire address
+  ENGINE2_TEMP_ENG_LIMIT,   // Engine temperature emergency limit
+  ENGINE2_TEMP_ROOM,        // Room temperature sensor 1-wire address
+  ENGINE2_TEMP_ROOM_LIMIT,  // Room temperature emergency limit
   &sensors
 );
+#endif
 
+#ifdef ENGINE1
 DigitalInput alarmOilEngine1("Engine 1", PIN_INPUT_RELAY_OIL_ENG_1, "Oil Pressure");
+#endif
+#ifdef ENGINE2
 DigitalInput alarmOilEngine2("Engine 2", PIN_INPUT_RELAY_OIL_ENG_2, "Oil Pressure");
+#endif
 DigitalInput alarmSmoke("Engine Room", PIN_INPUT_RELAY_SMOKE, "Smoke Alarm");
 
 // Unfortunately the interrupt-related stuff (namely the button) has to be a static
@@ -77,6 +89,26 @@ DigitalInput alarmSmoke("Engine Room", PIN_INPUT_RELAY_SMOKE, "Smoke Alarm");
 
 #ifdef OTA
 #include "../lib/ota.cpp"
+#endif
+
+#ifdef WIFI
+void showDeviceStatus() {
+  String text = "EngineGuard: " + String(MDNS_NAME) + "\n\n";
+
+#ifdef ENGINE1
+  text = text + "Status for engine 1:\n\n" + engine1.getStatus() + "\n\n";
+#else
+  text = text + "Engine 1 is not defined\n\n";
+#endif
+
+#ifdef ENGINE2
+  text = text + "Status for engine 2:\n\n" + engine2.getStatus() + "\n\n";
+#else
+  text = text + "Engine 2 is not defined\n\n";
+#endif
+
+  webServer.send(200, "text/plain", text);
+}
 #endif
 
 void setup(void) {
@@ -103,6 +135,9 @@ void setup(void) {
     Serial.println("Error starting mDNS");
     return;
   }
+
+  webServer.on("/", showDeviceStatus);
+  webServer.begin();
 #endif
 
 #ifdef OTA
@@ -125,21 +160,25 @@ EmergencyReason getZeroEmergencyReason(void) {
 }
 
 EmergencyReason checkEmergency(void) {
+#ifdef ENGINE1
   if (engine1.isEmergency()) {
     return engine1.getEmergencyReason();
-  }
-
-  if (engine2.isEmergency()) {
-    return engine2.getEmergencyReason();
   }
 
   if (alarmOilEngine1.isEmergency()) {
     return alarmOilEngine1.getEmergencyReason();
   }
+#endif
+
+#ifdef ENGINE2
+  if (engine2.isEmergency()) {
+    return engine2.getEmergencyReason();
+  }
 
   if (alarmOilEngine2.isEmergency()) {
     return alarmOilEngine2.getEmergencyReason();
   }
+#endif
 
   if (alarmSmoke.isEmergency()) {
     return alarmSmoke.getEmergencyReason();
@@ -151,12 +190,26 @@ EmergencyReason checkEmergency(void) {
 void loop(void) {
   Serial.println("---");
 
+#ifdef ENGINE1
   engine1.readSensors();
+#endif
+
+#ifdef ENGINE2
   engine2.readSensors();
+#endif
 
   const EmergencyReason EmergencyReason = checkEmergency();
 
+#ifndef ENGINE1
+  display.updateDisplay(EmergencyReason);
+#else
+  #ifndef ENGINE2
+  display.updateDisplay(&engine1, EmergencyReason);
+  #else
   display.updateDisplay(&engine1, &engine2, EmergencyReason);
+  #endif
+#endif
+
   sound.updateSignal(EmergencyReason, buttonPressIsStillValid());
 
   buttonLoop();
@@ -172,6 +225,8 @@ void loop(void) {
     WiFi.disconnect();
     WiFi.reconnect();
   }
+
+  webServer.handleClient();
 #endif
 
 #ifdef OTA

@@ -11,13 +11,27 @@ Engine::Engine(String engineName, String onewireAddressEngine, float emergencyLi
   this->lastTemperatureRoom = 0.0;
 
   this->onewireSensors = sensors;
+
+  this->lastReadStatus = "";
 }
 
 String Engine::getName() {
   return this->engineName;
 }
 
+String Engine::getStatus() {
+  String statusText = "";
+  statusText += "Engine name: " + this->getName() + "\n";
+  statusText += "Engine sensor address: " + this->onewireAddressEngine + "\n";
+  statusText += "Room sensor address: " + this->onewireAddressRoom + "\n";
+
+  statusText += this->lastReadStatus;
+
+  return statusText;
+}
+
 void Engine::readSensors() {
+  String newStatus = "";
   int numberOfSensors = this->onewireSensors->getDeviceCount();
 
   this->onewireSensors->requestTemperatures();
@@ -25,28 +39,39 @@ void Engine::readSensors() {
   DeviceAddress currentDeviceAddress;
   String currentDeviceAddressStr;
 
+  if (numberOfSensors == 0) {
+    newStatus += "No devices found\n";
+  }
+
   for (int i=0; i < numberOfSensors; i++) {
     if (this->onewireSensors->getAddress(currentDeviceAddress, i)) {
       currentDeviceAddressStr = this->oneWireDeviceAddressToString(currentDeviceAddress);
 
       Serial.print(currentDeviceAddressStr + " ");
+      newStatus += String(i) + ": " + currentDeviceAddressStr;
 
       float temperature = this->onewireSensors->getTempC(currentDeviceAddress);
       Serial.print(temperature);
+      newStatus += " temp: " + String(temperature);
 
       if (currentDeviceAddressStr == this->onewireAddressEngine) {
         Serial.print(" belongs to " + this->engineName + " (engine)");
+        newStatus += " (engine)";
         this->lastTemperatureEngine = temperature;
       }
 
       if (currentDeviceAddressStr == this->onewireAddressRoom) {
         Serial.print(" belongs to " + this->engineName + " (room)");
+        newStatus += " (room)";
         this->lastTemperatureRoom = temperature;
       }
 
       Serial.println();
+      newStatus += "\n";
     }
   }
+
+  this->lastReadStatus = newStatus;
 }
 
 float Engine::getTemperatureEngine() {

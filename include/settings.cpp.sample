@@ -1,5 +1,21 @@
 // Compile-time settings for EngineGuard
 
+// Engine names, sensor addressess and alarm limits
+#define ENGINE1_NAME "Eng 1 (port)"
+#define ENGINE1_TEMP_ROOM "2804b7a30e000009"
+#define ENGINE1_TEMP_ROOM_LIMIT 50.0
+#define ENGINE1_TEMP_ENG "28f39aa20e000065"
+#define ENGINE1_TEMP_ENG_LIMIT 95.0
+
+// To add another engine uncomment ENGINE2 macros
+/*
+#define ENGINE2_NAME "Eng 2 (stb)"
+#define ENGINE2_TEMP_ROOM "2802f8a20e0000b2"
+#define ENGINE2_TEMP_ROOM_LIMIT 50.0
+#define ENGINE2_TEMP_ENG "282830a30e000058"
+#define ENGINE2_TEMP_ENG_LIMIT 95.0
+*/
+
 // Defining WiFi-related variables activates network
 // Comment these if you want to disable WiFi support
 #define WIFI_SSID "your-wifi-ssid"

@@ -91,7 +91,8 @@ Output
  * If you are planning to use OTA updates copy `include/settings.mk.sample` to `include/settings.mk`.
    Make necessary changes.
  * You'll find more configurations in `src/engineguard.cpp`. If you don't
-   have twin engines just remove references to the engine 2.
+   have twin engines just remove references to the engine 2. It is OK to comment both
+   engines if you don't want to monitor temperatures at all. 
  * `make upload` should build and upload the code to your ESP32 via USB.
  * `make upload_ota` should do the same as OTA update after you have uploaded the first
    version of the code via USB.
@@ -99,22 +100,24 @@ Output
    missing some boot code. Uploading a simple Hello World from Arduino IDE did the
    trick.
 
-### Identifying OneWire Temperature Sensors
+### Configuring Your Engine Guard
 
-The OneWire sensor addresses are hard-coded in `engineguard.cpp`. Within each
-cycle EngineGuard enumerates all OneWire devices (`make monitor`). This is an easy
-way to find out which sensors are connected and which devices are already claimed
-by a known sensor.
+Engine Guard is configured by editing `include/settings.cpp` i.e. compile time.
 
-Sample output:
+Engine Guard can monitor two temperatures per engine. You can define 0-2 engines.
 
-```
-28309d1200000097 29.37 belongs to Eng1 (engine)
-289cef1400000051 29.37
-28decb14000000ad 27.12 belongs to Eng1 (room)
-28ddd61400000064 27.06
-28309d1200000097 29.37
-289cef1400000051 29.37 belongs to Eng2 (engine)
-28decb14000000ad 27.12
-28ddd61400000064 27.06 belongs to Eng2 (room)
-```
+Configuration procedure (`settings.cpp`):
+1. Configure a WiFi network using related variables `WIFI_SSID`, `WIFI_PASS` and `MDNS_NAME`.
+1. Set `OTA_PASSWORD` to random string. Don't forget to edit `settings.mk` so you can
+   upload new versions using OTA.
+1. Set engine name(s) and set some placeholder for temperature sensor 1-wire addresses
+   (e.g. "foobar").
+1. Upload the first code version via USB and `make upload`. Later you can use `make upload_ota`
+   as long as your workstation and Engine Guard are connected to the same network.
+1. Connect the first temperature sensor to Engine Guard.
+1. Power up the EG and go to (http://eg.local) or any other name you defined by `MDNS_NAME`.
+1. The status display should tell you the 1-wire address of the connected sensor.
+1. Copy & paste the address to `settings.cpp`.
+1. Upload the code and see the status page. Now you should see the sensor being claimed by
+   defined task.
+1. Repeat the above to define all sensors.

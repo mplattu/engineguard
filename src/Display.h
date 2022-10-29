@@ -17,8 +17,12 @@ private:
   bool emergencyReasonHasChanged(EmergencyReason emergencyMode);
   void updateDisplayHeartbeat();
   bool heartbeatFlag;
+  void clearObsoleteEmergencyReason(EmergencyReason emergencyReason);
+  void updateDisplayEmergencyMode(EmergencyReason emergencyReason);
 public:
   Display(U8X8_SSD1309_128X64_NONAME2_SW_I2C * display);
+  void updateDisplay(EmergencyReason emergencyReason);
+  void updateDisplay(Engine * engine, EmergencyReason emergencyReason);
   void updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason);
 };
 
