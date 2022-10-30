@@ -12,6 +12,10 @@ Display::Display(U8X8_SSD1309_128X64_NONAME2_SW_I2C * display) {
   this->setFontNormal();
 }
 
+void Display::clearDisplay() {
+  this->display->clearDisplay();
+}
+
 void Display::setFontNormal() {
   this->display->setFont(u8x8_font_7x14B_1x2_f);
 }
@@ -26,6 +30,16 @@ bool Display::emergencyReasonHasChanged(EmergencyReason emergencyMode) {
 
 int Display::getIconColumn() {
   return this->display->getCols()-3;
+}
+
+int Display::getMiddleLine() {
+  return this->display->getRows() / 2;
+}
+
+void Display::showMessage(String message) {
+  String truncatedMessage = message.substring(0, this->display->getCols());
+  this->display->clearDisplay();
+  this->display->drawUTF8(0, this->getMiddleLine(), truncatedMessage.c_str());
 }
 
 void Display::updateDisplayHeartbeat() {

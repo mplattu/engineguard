@@ -13,6 +13,7 @@ private:
   U8X8_SSD1309_128X64_NONAME2_SW_I2C * display;
   EmergencyReason lastEmergencyReason;
   int getIconColumn();
+  int getMiddleLine();
   void setFontNormal();
   bool emergencyReasonHasChanged(EmergencyReason emergencyMode);
   void updateDisplayHeartbeat();
@@ -21,6 +22,8 @@ private:
   void updateDisplayEmergencyMode(EmergencyReason emergencyReason);
 public:
   Display(U8X8_SSD1309_128X64_NONAME2_SW_I2C * display);
+  void clearDisplay();
+  void showMessage(String message);
   void updateDisplay(EmergencyReason emergencyReason);
   void updateDisplay(Engine * engine, EmergencyReason emergencyReason);
   void updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason);

@@ -117,6 +117,8 @@ void setup(void) {
 
   Serial.begin(115200);
 
+  display.showMessage("Don't panic!");
+
   sensors.begin();
 
   buttonSetup(PIN_CLEAR_BUTTON, CLEAR_BUTTON_VALIDITY_IN_SECONDS);
@@ -145,6 +147,8 @@ void setup(void) {
   initialiseArduinoOTA(MDNS_NAME, OTA_PASSWORD);
   Serial.println("OK");
 #endif
+
+  display.clearDisplay();
 }
 
 EmergencyReason getZeroEmergencyReason(void) {
