@@ -5,6 +5,7 @@ Yacht engine room monitor based on ESP32 monitoring following sensors:
  * Temperature of engine room above engines 1 & 2 (DS18B20 temperature sensor)
  * Oil pressure from engines 1 & 2 (+24V DC from VDO oil pressure sensor)
  * Engine room smoke sensor
+ * Kitchen gas sensor
 
 Intended operation:
  1. Any of the sensors report an emergency.
@@ -16,7 +17,18 @@ Intended operation:
 ## Project Status
 
  1. We have a working code for all the sensors.
- 1. We are testing the PCB v3.
+ 1. The PCB v3 needs two improvements:
+    * 1-wire network must be connected to 3,3 V instead of 5 V
+    * Spare connectors should be used as 1-wire connectors
+
+Main unit (green = power, red = activity): \
+<img src="images/main_unit.jpg" alt="Main unit" width="50%">
+
+Display unit: \
+<img src="images/display.jpg" alt="Display" width="50%">
+
+Acknowledgement button mounted to the top of the display unit: \
+<img src="images/display_button.jpg" alt="Acknowledgement button" width="50%">
 
 ## Technical Details
 
@@ -38,8 +50,9 @@ See `board/` for Fritzing schematic & PCB.
 * Box for central unit including J1 and J2 ([Aliexpress](https://www.aliexpress.com/item/1005003153480194.html))
 * J3 internal piezo 3V ([Local electronics shop](https://www.partco.fi/fi/audiovideo/summerit/20187-summeri-3v.html))
 * Box for screen and cancel button ([Aliexpress](https://www.aliexpress.com/item/4000081121421.html))
-* Cancel button
+* Acknowledgement button ([Aliexpress](https://www.aliexpress.com/item/1005003105511055.html))
 * Smoke Detector: Orbis Marine Multisensor Detector [ORB-OH-43003-MAR](https://www.apollo-fire.co.uk/products/orbis-marine/smokeheat-detectors/orb-oh-43003-mar---orbis-marine-multi-sensor-detector-opticalheat---flashing-led/) and Orbis Marine Relay Base [ORB-RB-40004-MAR](https://www.apollo-fire.co.uk/products/orbis-marine/relay-bases/orb-rb-40004-mar---orbis-marine-timesaver-base---relay/)
+* Gas Sensor: a random 24V gas sensor from Aliexpress (ordered smoke sensor, got gas sensor)
 
 When selecting OLED screen make sure its driver chip is supported by
 [u8g2 library](https://github.com/olikraus/u8g2/wiki).
