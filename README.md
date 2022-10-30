@@ -56,8 +56,8 @@ Input
   1. Engine 1 Oil (GND)
   1. Engine 2 Oil (+24V) - GPIO 32
   1. Engine 2 Oil (GND)
-  1. Spare input (+24V) - GPIO 26
-  1. Spare input (GND)
+  1. Kitchen gas detector (+24V) - GPIO 26
+  1. Kitchen gas detector (GND)
   1. Engine room temperature 1-wire, VCC (red)
   1. Engine room temperature 1-wire, GND (black)
   1. Engine room temperature 1-wire, signal (yellow) - GPIO 4

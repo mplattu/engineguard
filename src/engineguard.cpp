@@ -21,6 +21,7 @@
 #define PIN_INPUT_RELAY_OIL_ENG_1 25
 #define PIN_INPUT_RELAY_OIL_ENG_2 32
 #define PIN_INPUT_RELAY_SMOKE 33
+#define PIN_INPUT_RELAY_GAS 26
 
 #include "../include/settings.cpp"
 
@@ -82,6 +83,7 @@ DigitalInput alarmOilEngine1("Engine 1", PIN_INPUT_RELAY_OIL_ENG_1, "Oil Pressur
 DigitalInput alarmOilEngine2("Engine 2", PIN_INPUT_RELAY_OIL_ENG_2, "Oil Pressure");
 #endif
 DigitalInput alarmSmoke("Engine Room", PIN_INPUT_RELAY_SMOKE, "Smoke Alarm");
+DigitalInput alarmGas("Kitchen", PIN_INPUT_RELAY_GAS, "Gas Alarm");
 
 // Unfortunately the interrupt-related stuff (namely the button) has to be a static
 // function. So no class-stuff here!
@@ -186,6 +188,10 @@ EmergencyReason checkEmergency(void) {
 
   if (alarmSmoke.isEmergency()) {
     return alarmSmoke.getEmergencyReason();
+  }
+
+  if (alarmGas.isEmergency()) {
+    return alarmGas.getEmergencyReason();
   }
 
   return getZeroEmergencyReason();
