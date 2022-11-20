@@ -1,0 +1,67 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=EngineRoomGuard
+*Date=08:20:36
+*CreatedBy=Fritzing 0.9.9b.2021-09-22.CD-348-0-f0af53a9
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;57.6351;-39.7668;-90;Bottom;TXT2
+2;;;31.513;-29.3478;0;Bottom;Via6
+3;;;52.6795;-13.2717;0;Bottom;Via15
+4;;;32.75;-37.25;0;Bottom;Via13
+5;;;45.5826;-71.6611;0;Bottom;Via8
+6;220;THT;71.8726;-32.6948;-90;Bottom;R3
+7;4.7k;THT;72.343;-16.7963;90;Bottom;R2
+8;;THT;28.3916;-65.1363;0;Bottom;J3 Int Piezo
+9;;;20.75;-37.25;0;Bottom;Via4
+10;;relay-g5v;23.7342;-51.5725;90;Bottom;U2 Alarm
+11;;relay-g5v;23.9553;-25.1941;90;Bottom;U5 Eng 2 Oil
+12;;;18.402;-55.2476;0;Bottom;TXT1
+13;;;31.2596;-64.8325;90;Bottom;TXT1
+14;;;69.7603;-16.3623;0;Bottom;TXT1
+15;;relay-g5v;23.7577;-43.1293;90;Bottom;U3 Smoke
+16;;;49.4885;-41.4791;0;Bottom;Via20
+17;;;14.8344;-69.4559;0;Bottom;TXT1
+18;;THT;38.0611;-80.7226;-90;Bottom;J2
+19;;;26.25;-74.75;0;Bottom;Via9
+20;;;23.25;-64.75;0;Bottom;Via19
+21;;relay-g5v;23.8283;-16.1065;90;Bottom;U6 Gas
+22;;;22.6856;-11.282;0;Bottom;Via2
+23;;;31.425;-20.0967;0;Bottom;Via5
+24;;;66.75;-18.75;0;Bottom;Via10
+25;;;71.5609;-48.2166;90;Bottom;TXT1
+26;;;53.9678;-73.6804;0;Bottom;Via7
+27;;;20.7242;-37.4127;0;Bottom;TXT1
+28;0.030;5 mm [THT];71.8727;-40.6838;180;Bottom;LED2
+29;0.47mF;100 mil [THT, electrolytic];5.50845;-47.5327;0;Bottom;C1
+30;;;65.1552;-10.6957;0;Bottom;TXT1
+31;;300 mil [THT];4.86833;-19.9224;90;Bottom;D1
+32;;;16.3093;-39.3841;0;Bottom;Via1
+33;0.47mF;100 mil [THT, electrolytic];5.30468;-55.5018;0;Bottom;C2
+34;;;24.6211;-29.0026;0;Bottom;Via3
+35;330;THT;5.41013;-63.3814;-90;Bottom;R1
+36;;;65.7089;-73.3488;0;Bottom;TXT1
+37;;;68.7611;-32.3331;0;Bottom;TXT1
+38;;;7.97278;-19.3833;0;Bottom;TXT1
+39;;;8.99362;-63.292;0;Bottom;TXT1
+40;;;51.1664;-41.9538;-90;Bottom;U2
+41;;;16.8077;-19.2167;0;Bottom;TXT1
+42;;;9.39396;-10.821;0;Bottom;TXT1
+43;;;68.8083;-65.8911;0;Bottom;Via11
+44;;THT;37.8183;-4.20994;90;Bottom;J1
+45;5V;to220-igo;4.43966;-36.6754;-90;Bottom;IC1
+46;;;21.5628;-70.9311;0;Bottom;Via16
+47;;;18.3461;-46.6319;0;Bottom;TXT1
+48;;;11.023;-73.2235;0;Bottom;TXT1
+49;;relay-g5v;23.9694;-33.9571;90;Bottom;U4 Eng 1 Oil
+50;;;20.6723;-28.781;0;Bottom;TXT1
+51;0.030;5 mm [THT];14.1817;-66.006;90;Bottom;LED1
+52;;;31.513;-55.8737;0;Bottom;Via12

@@ -17,9 +17,7 @@ Intended operation:
 ## Project Status
 
  1. We have a working code for all the sensors.
- 1. The PCB v3 needs two improvements:
-    * 1-wire network must be connected to 3,3 V instead of 5 V
-    * Spare connectors should be used as 1-wire connectors
+ 1. The PCB v4 is in production.
 
 Main unit (green = power, red = activity): \
 <img src="images/main_unit.jpg" alt="Main unit" width="50%">
@@ -30,11 +28,14 @@ Display unit: \
 Acknowledgement button mounted to the top of the display unit: \
 <img src="images/display_button.jpg" alt="Acknowledgement button" width="50%">
 
+PCB: \
+<img src="board/EngineRoomGuard_pcb.png" alt="PCB" width="50%">
+
 ## Technical Details
 
 ### Schematic and PCBs
 
-See `board/` for Fritzing schematic & PCB.
+See `board/` for Fritzing schematic & PCB and Gerber PCB files.
 
 ### Components
 
@@ -71,7 +72,7 @@ Input
   1. Engine 2 Oil (GND)
   1. Kitchen gas detector (+24V) - GPIO 26
   1. Kitchen gas detector (GND)
-  1. Engine room temperature 1-wire, VCC (red)
+  1. Engine room temperature 1-wire, 3V3 (red)
   1. Engine room temperature 1-wire, GND (black)
   1. Engine room temperature 1-wire, signal (yellow) - GPIO 4
   1. unused
@@ -86,12 +87,12 @@ Output
   1. Alarm bell GND
   1. Clear button A (closed when pressed) - GPIO 23
   1. Clear button A (closed when pressed) - GND
-  1. unused
-  1. unused
-  1. unused
-  1. unused
-  1. unused
-  1. unused
+  1. Engine room temperature 1-wire, 3V3 (red)
+  1. Engine room temperature 1-wire, GND (black)
+  1. Engine room temperature 1-wire, signal (yellow) - GPIO 4
+  1. Engine room temperature 1-wire, 3V3 (red)
+  1. Engine room temperature 1-wire, GND (black)
+  1. Engine room temperature 1-wire, signal (yellow) - GPIO 4
   * Internal buzzer - GPIO 18
 
 ## Software
