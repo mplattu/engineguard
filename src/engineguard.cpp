@@ -128,11 +128,24 @@ void setup(void) {
 #ifdef WIFI
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   
+  int64_t wifiConnectInitiated = esp_timer_get_time() / 1000;
+  int64_t timeNow;
+
+  Serial.print("Waiting for WiFi..");
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.printf("Failed to connect to %s, rebooting in 5 seconds...", WIFI_SSID);
-    delay(5000);
-    Serial.println("Rebooting");
-    ESP.restart();
+    timeNow = esp_timer_get_time() / 1000;
+    if ((timeNow - wifiConnectInitiated) > 5000) {
+      Serial.println("No wifi");
+      display.showMessage("No WiFi on boot.");
+      delay(5000);
+      break;
+    }
+    Serial.print(".");
+    delay(500);
+  }
+
+  if (WiFi.waitForConnectResult() == WL_CONNECTED) {
+    Serial.println("Connected");
   }
 
   if(!MDNS.begin(MDNS_NAME)) {
