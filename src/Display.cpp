@@ -7,6 +7,7 @@ Display::Display(U8X8_SSD1309_128X64_NONAME2_SW_I2C * display) {
   this->lastEmergencyReason = getZeroEmergencyReason();
 
   this->heartbeatFlag = false;
+  this->wifiConnected = false;
 
   this->display->begin();
   this->setFontNormal();
@@ -43,12 +44,18 @@ void Display::showMessage(String message) {
 }
 
 void Display::updateDisplayHeartbeat() {
-  this->display->setFont(u8x8_font_open_iconic_weather_2x2);
-
   if (this->heartbeatFlag) {
-    this->display->drawUTF8(this->getIconColumn(), 0, "E");
+    if (this->wifiConnected) {
+      this->display->setFont(u8x8_font_open_iconic_embedded_2x2);
+      this->display->drawUTF8(this->getIconColumn(), 0, "P");
+    }
+    else {
+      this->display->setFont(u8x8_font_open_iconic_weather_2x2);
+      this->display->drawUTF8(this->getIconColumn(), 0, "E");
+    }
   }
   else {
+    this->display->setFont(u8x8_font_open_iconic_weather_2x2);
     this->display->drawUTF8(this->getIconColumn(), 0, " ");
   }
 
@@ -78,7 +85,8 @@ void Display::updateDisplayEmergencyMode(EmergencyReason emergencyReason) {
   this->setFontNormal();
 }
 
-void Display::updateDisplay(EmergencyReason emergencyReason) {
+void Display::updateDisplay(EmergencyReason emergencyReason, bool wifiConnected) {
+  this->wifiConnected = wifiConnected;
   this->clearObsoleteEmergencyReason(emergencyReason);
 
   if (emergencyReason.isEmergency) {
@@ -89,7 +97,8 @@ void Display::updateDisplay(EmergencyReason emergencyReason) {
   }
 }
 
-void Display::updateDisplay(Engine * engine, EmergencyReason emergencyReason) {
+void Display::updateDisplay(Engine * engine, EmergencyReason emergencyReason, bool wifiConnected) {
+  this->wifiConnected = wifiConnected;
   this->clearObsoleteEmergencyReason(emergencyReason);
 
   if (emergencyReason.isEmergency) {
@@ -104,7 +113,8 @@ void Display::updateDisplay(Engine * engine, EmergencyReason emergencyReason) {
   }
 }
 
-void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason) {
+void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason, bool wifiConnected) {
+  this->wifiConnected = wifiConnected;
   this->clearObsoleteEmergencyReason(emergencyReason);
 
   if (emergencyReason.isEmergency) {

@@ -113,6 +113,14 @@ void showDeviceStatus() {
 }
 #endif
 
+bool wifiConnected() {
+#ifdef WIFI
+  return (WiFi.status() == WL_CONNECTED);
+#else
+  return false;
+#endif  
+}
+
 void setup(void) {
   pinMode(PIN_ONBOARD_LED, OUTPUT);
   digitalWrite(PIN_ONBOARD_LED, HIGH);
@@ -128,11 +136,24 @@ void setup(void) {
 #ifdef WIFI
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   
-  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.printf("Failed to connect to %s, rebooting in 5 seconds...", WIFI_SSID);
-    delay(5000);
-    Serial.println("Rebooting");
-    ESP.restart();
+  int64_t wifiConnectInitiated = esp_timer_get_time() / 1000;
+  int64_t timeNow;
+
+  Serial.print("Waiting for WiFi..");
+  while (WiFi.status() != WL_CONNECTED) {
+    timeNow = esp_timer_get_time() / 1000;
+    if ((timeNow - wifiConnectInitiated) > 5000) {
+      Serial.println("No wifi");
+      display.showMessage("No WiFi on boot.");
+      delay(5000);
+      break;
+    }
+    Serial.print(".");
+    delay(500);
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("Connected");
   }
 
   if(!MDNS.begin(MDNS_NAME)) {
@@ -211,12 +232,12 @@ void loop(void) {
   const EmergencyReason EmergencyReason = checkEmergency();
 
 #ifndef ENGINE1
-  display.updateDisplay(EmergencyReason);
+  display.updateDisplay(EmergencyReason, wifiConnected());
 #else
   #ifndef ENGINE2
-  display.updateDisplay(&engine1, EmergencyReason);
+  display.updateDisplay(&engine1, EmergencyReason, wifiConnected());
   #else
-  display.updateDisplay(&engine1, &engine2, EmergencyReason);
+  display.updateDisplay(&engine1, &engine2, EmergencyReason, wifiConnected());
   #endif
 #endif
 
@@ -233,7 +254,7 @@ void loop(void) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("WiFi connection lost - attemting to reconnect");
     WiFi.disconnect();
-    WiFi.reconnect();
+    WiFi.begin(WIFI_SSID, WIFI_PASS);
   }
 
   webServer.handleClient();
