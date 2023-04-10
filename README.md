@@ -16,8 +16,12 @@ Intended operation:
 
 ## Project Status
 
- 1. We have a working code for all the sensors.
- 1. The PCB v4 is in production.
+ * We have a working code for all the sensors.
+ * The PCB v4 was installed to the boat. It turned out that 24V to 5V conversion based on
+   the voltage regulator 7805 created too much heat. Therefore, an external step down
+   converter was introduced.
+ * The PCB v5 has not neither been produced or field tested.
+
 
 Main unit (green = power, red = activity): \
 <img src="images/main_unit.jpg" alt="Main unit" width="50%">
@@ -43,11 +47,10 @@ See `board/` for Fritzing schematic & PCB and Gerber PCB files.
 * U2 5V reed relay with protective diode, Meder SIL05-1A72-71D ([Local electronics shop](https://www.partco.fi/fi/saehkoemekaniikka/releet/reed-releet/7411-rr-05-sild.html))
 * U3-U6 24V reed relay with protective diode, Meder SIL24-1A72-71D ([Local electronics shop](https://www.partco.fi/fi/saehkoemekaniikka/releet/reed-releet/7413-rr-24-sild.html))
 * OLED screen with SSD1309 driver, I2C version ([Aliexpress](https://www.aliexpress.com/item/1005003787866468.html))
-* C1, C2 unidirectional capacitor 0,47 mF
-* D1 schottky diode 1N5817
-* LED1 5mm LED in THT package
+* LED1, LED2 5mm LED in THT package
 * R1 resistor 330 ohm
 * R2 resistor 4,7 kOhm
+* External DC 24V to DC 5V step down converter ([Joy IT SBC-Buck04-5V](https://joy-it.net/en/products/SBC-Buck04-5V))
 * Box for central unit including J1 and J2 ([Aliexpress](https://www.aliexpress.com/item/1005003153480194.html))
 * J3 internal piezo 3V ([Local electronics shop](https://www.partco.fi/fi/audiovideo/summerit/20187-summeri-3v.html))
 * Box for screen and cancel button ([Aliexpress](https://www.aliexpress.com/item/4000081121421.html))
@@ -75,7 +78,7 @@ Input
   1. Engine room temperature 1-wire, 3V3 (red)
   1. Engine room temperature 1-wire, GND (black)
   1. Engine room temperature 1-wire, signal (yellow) - GPIO 4
-  1. unused
+  1. DC VCC (5V)
 
 Output
 
@@ -88,11 +91,11 @@ Output
   1. Clear button A (closed when pressed) - GPIO 23
   1. Clear button A (closed when pressed) - GND
   1. Engine room temperature 1-wire, 3V3 (red)
-  1. Engine room temperature 1-wire, GND (black)
   1. Engine room temperature 1-wire, signal (yellow) - GPIO 4
+  1. Engine room temperature 1-wire, GND (black)
   1. Engine room temperature 1-wire, 3V3 (red)
-  1. Engine room temperature 1-wire, GND (black)
   1. Engine room temperature 1-wire, signal (yellow) - GPIO 4
+  1. Engine room temperature 1-wire, GND (black)
   * Internal buzzer - GPIO 18
 
 ## Software
