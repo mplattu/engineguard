@@ -22,6 +22,10 @@
 #define WIFI_PASS "your-wifi-passphrase"
 #define MDNS_NAME "eg"
 
+// You can define SignalK server IP and port here
+#define SIGNALK_SERVER_IP "192.168.0.1"
+#define SIGNALK_SERVER_PORT 3000
+
 // Define MDNS_NAME and OTA password to activate OTA updates
 #define OTA_PASSWORD "your-secret-ota-password"
 
