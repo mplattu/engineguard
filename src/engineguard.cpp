@@ -4,6 +4,7 @@
 #include <Wire.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <EspSigK.h>
 
 #include "Engine.h"
 #include "DigitalInput.h"
@@ -28,10 +29,11 @@
 // Network
 #ifdef WIFI_SSID
 #define WIFI
-#include <ESPmDNS.h>
 #include <WiFi.h>
 #include <WebServer.h>
 WebServer webServer(80);
+WiFiClient wiFiClient;
+EspSigK sigK(MDNS_NAME, WIFI_SSID, WIFI_PASS, &wiFiClient);
 #endif
 
 #ifdef MDNS_NAME
@@ -134,40 +136,18 @@ void setup(void) {
   buttonSetup(PIN_CLEAR_BUTTON, CLEAR_BUTTON_VALIDITY_IN_SECONDS);
 
 #ifdef WIFI
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  sigK.setServerHost(SIGNALK_SERVER_IP);
+  sigK.setServerPort(SIGNALK_SERVER_PORT);
+
+  sigK.begin();
   
-  int64_t wifiConnectInitiated = esp_timer_get_time() / 1000;
-  int64_t timeNow;
-
-  Serial.print("Waiting for WiFi..");
-  while (WiFi.status() != WL_CONNECTED) {
-    timeNow = esp_timer_get_time() / 1000;
-    if ((timeNow - wifiConnectInitiated) > 5000) {
-      Serial.println("No wifi");
-      display.showMessage("No WiFi on boot.");
-      delay(5000);
-      break;
-    }
-    Serial.print(".");
-    delay(500);
-  }
-
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("Connected");
-  }
-
-  if(!MDNS.begin(MDNS_NAME)) {
-    Serial.println("Error starting mDNS");
-    return;
-  }
-
   webServer.on("/", showDeviceStatus);
   webServer.begin();
 #endif
 
 #ifdef OTA
   Serial.print("Initialising OTA...");
-  initialiseArduinoOTA(MDNS_NAME, OTA_PASSWORD);
+  initialiseArduinoOTA((char*)MDNS_NAME, (char*)OTA_PASSWORD);
   Serial.println("OK");
 #endif
 
@@ -218,6 +198,14 @@ EmergencyReason checkEmergency(void) {
   return getZeroEmergencyReason();
 }
 
+void safeDelay(unsigned long ms) {
+#ifdef WIFI
+  sigK.safeDelay(ms);
+#else
+  delay(ms);
+#endif
+}
+
 void loop(void) {
   Serial.println("---");
 
@@ -246,17 +234,11 @@ void loop(void) {
   buttonLoop();
 
   digitalWrite(PIN_ONBOARD_LED, LOW);
-  delay(250);
+  safeDelay(250);
   digitalWrite(PIN_ONBOARD_LED, HIGH);
-  delay(250);
+  safeDelay(250);
 
 #ifdef WIFI
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("WiFi connection lost - attemting to reconnect");
-    WiFi.disconnect();
-    WiFi.begin(WIFI_SSID, WIFI_PASS);
-  }
-
   webServer.handleClient();
 #endif
 
