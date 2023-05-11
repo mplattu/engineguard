@@ -129,23 +129,28 @@ void setup(void) {
 
   Serial.begin(115200);
 
-  display.showMessage("Don't panic!");
+  display.showMessage("Init: Sensors");
 
   sensors.begin();
 
+  display.showMessage("Init: Button");
   buttonSetup(PIN_CLEAR_BUTTON, CLEAR_BUTTON_VALIDITY_IN_SECONDS);
 
 #ifdef WIFI
   sigK.setServerHost(SIGNALK_SERVER_IP);
   sigK.setServerPort(SIGNALK_SERVER_PORT);
+  sigK.setPrintDebugSerial(true);
 
+  display.showMessage("Init: SignalK");
   sigK.begin();
-  
+
+  display.showMessage("Init: Webserver"); 
   webServer.on("/", showDeviceStatus);
   webServer.begin();
 #endif
 
 #ifdef OTA
+  display.showMessage("Init: OTA");
   Serial.print("Initialising OTA...");
   initialiseArduinoOTA((char*)MDNS_NAME, (char*)OTA_PASSWORD);
   Serial.println("OK");
@@ -206,6 +211,10 @@ void safeDelay(unsigned long ms) {
 #endif
 }
 
+int getCelsiusInKelvin(float tempCelsius) {
+  return (int)(tempCelsius - 274.15);
+}
+
 void loop(void) {
   Serial.println("---");
 
@@ -239,6 +248,15 @@ void loop(void) {
   safeDelay(250);
 
 #ifdef WIFI
+#ifdef ENGINE1
+  sigK.addDeltaValue("propulsion.port.coolantTemperature", getCelsiusInKelvin(engine1.getTemperatureEngine()));
+  sigK.addDeltaValue("environment.inside.engineroomPort.temperature", getCelsiusInKelvin(engine1.getTemperatureRoom()));
+#endif
+#ifdef ENGINE2
+  sigK.addDeltaValue("propulsion.starboard.coolantTemperature", getCelsiusInKelvin(engine2.getTemperatureEngine()));
+  sigK.addDeltaValue("environment.inside.engineroomStarboard.temperature", getCelsiusInKelvin(engine2.getTemperatureRoom()));
+#endif
+  sigK.sendDelta();
   webServer.handleClient();
 #endif
 
