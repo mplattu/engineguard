@@ -19,6 +19,18 @@ String Engine::getName() {
   return this->engineName;
 }
 
+String Engine::getEmergencyLimitEngineStr() {
+  float temperature = this->emergencyLimitEngine;
+
+  return String(temperature, 1) + "°C";
+}
+
+String Engine::getEmergencyLimitRoomStr() {
+  float temperature = this->emergencyLimitRoom;
+
+  return String(temperature, 1) + "°C";
+}
+
 String Engine::getStatus() {
   String statusText = "";
   statusText += "Engine name: " + this->getName() + "\n";

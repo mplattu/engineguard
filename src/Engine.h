@@ -23,6 +23,8 @@ private:
 public:
   Engine(String engineName, String onewireAddressEngine, float emergencyLimitEngine, String onewireAddressRoom, float emergencyLimitRoom, DallasTemperature * sensors);
   String getName();
+  String getEmergencyLimitEngineStr();
+  String getEmergencyLimitRoomStr();
   String getStatus();
   void readSensors();
   float getTemperatureEngine();

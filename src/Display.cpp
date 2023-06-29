@@ -133,3 +133,23 @@ void Display::updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason 
   }
 
 }
+
+void Display::showEmergencyLimits(Engine * engine) {
+  this->display->clearDisplay();
+
+  this->display->drawUTF8(0, 1, engine->getName().c_str());
+  this->display->drawUTF8(1, 3, engine->getEmergencyLimitEngineStr().c_str());
+  this->display->drawUTF8(8, 3, engine->getEmergencyLimitRoomStr().c_str());
+}
+
+void Display::showEmergencyLimits(Engine * engine1, Engine * engine2) {
+  this->display->clearDisplay();
+
+  this->display->drawUTF8(0, 0, engine1->getName().c_str());
+  this->display->drawUTF8(1, 2, engine1->getEmergencyLimitEngineStr().c_str());
+  this->display->drawUTF8(8, 2, engine1->getEmergencyLimitRoomStr().c_str());
+
+  this->display->drawUTF8(0, 4, engine2->getName().c_str());
+  this->display->drawUTF8(1, 6, engine2->getEmergencyLimitEngineStr().c_str());
+  this->display->drawUTF8(8, 6, engine2->getEmergencyLimitRoomStr().c_str());
+}

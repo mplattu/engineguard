@@ -29,6 +29,8 @@ public:
   void updateDisplay(EmergencyReason emergencyReason, bool wifiConnected);
   void updateDisplay(Engine * engine, EmergencyReason emergencyReason, bool wifiConnected);
   void updateDisplay(Engine * engine1, Engine * engine2, EmergencyReason emergencyReason, bool wifiConnected);
+  void showEmergencyLimits(Engine * engine);
+  void showEmergencyLimits(Engine * engine1, Engine * engine2);
 };
 
 #endif

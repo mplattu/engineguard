@@ -156,6 +156,15 @@ void setup(void) {
   Serial.println("OK");
 #endif
 
+#ifdef ENGINE1
+  #ifdef ENGINE2
+  display.showEmergencyLimits(&engine1, &engine2);
+  #else
+  display.showEmergencyLimits(&engine1);
+  #endif
+  delay(3000);
+#endif
+
   display.clearDisplay();
 }
 
