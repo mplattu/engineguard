@@ -221,7 +221,7 @@ void safeDelay(unsigned long ms) {
 }
 
 int getCelsiusInKelvin(float tempCelsius) {
-  return (int)(tempCelsius - 274.15);
+  return (int)(tempCelsius + 273.15);
 }
 
 void loop(void) {
